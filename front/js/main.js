@@ -20,7 +20,5 @@
         Tanks.tick();
         
         Tanks.draw();
-        
-        if (Tanks.ttr() == 0) Tanks.try_shoot();
     }, 25);
 })();
