@@ -260,7 +260,7 @@
     var tick = () => {
         var buttons = Tanks.buttons();
         
-        if (!ttrm && (Tanks.c_down() || buttons["Space"] || buttons["o"] || buttons["x"]))
+        if (!ttrm) // && (Tanks.c_down() || buttons["Space"] || buttons["o"] || buttons["x"]))
             try_shoot();
         
         (() => {
