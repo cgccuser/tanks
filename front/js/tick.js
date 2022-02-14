@@ -257,11 +257,16 @@
         p_dir = p_off + dir;
     };
     
+    var try_shot_cnt = 0
+    
     var tick = () => {
         var buttons = Tanks.buttons();
         
-        if (!ttrm) // && (Tanks.c_down() || buttons["Space"] || buttons["o"] || buttons["x"]))
+        if (!ttrm && try_shot_cnt > 1) { // && (Tanks.c_down() || buttons["Space"] || buttons["o"] || buttons["x"]))
             try_shoot();
+        } else {
+            try_shot_cnt ++;
+        }  
         
         (() => {
             var ds = [0, 0];
