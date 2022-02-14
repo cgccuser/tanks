@@ -20,5 +20,7 @@
         Tanks.tick();
         
         Tanks.draw();
+        
+        Tanks.try_shoot();
     }, 25);
 })();
