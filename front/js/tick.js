@@ -197,15 +197,15 @@
         if ((p[0] < -sx || p[0] > sx) || (p[1] < -sy || p[1] > sy))
             return 0;
 
-        d = (d % (Math.PI * 2) + (Math.PI * 2)) % (Math.PI * 2);
+        // d = (d % (Math.PI * 2) + (Math.PI * 2)) % (Math.PI * 2);
 
-        if (d > Math.PI)
-            d -= Math.PI * 2;
+        // if (d > Math.PI)
+        //     d -= Math.PI * 2;
         
-        d = Math.abs(d);
+        // d = Math.abs(d);
 
-        if (d > Math.PI / 12 && Math.PI - d > Math.PI / 12)
-            return 0;
+        // if (d > Math.PI / 8 && Math.PI - d > Math.PI / 8)
+        //     return 0;
 
         return 1;
     };
@@ -226,12 +226,15 @@
                 coll = Math.min(coll, collision([pos[0] + Math.cos(p_dir) * 26, pos[1] + Math.sin(p_dir) * 26], p_dir, ...window));
         
         for (var tank of tanks) {
+            if (tank.army == army)
+                continue;
+            
             c = collision([pos[0] + Math.cos(p_dir) * 26, pos[1] + Math.sin(p_dir) * 26], p_dir, ...tank.pos, 24, 40, tank.dir);
             
             if (c <= coll) {
                 coll = c;
                 
-                coll_id = tank.army == army ? -1 : tank.id;
+                coll_id = tank.id;
             }
         }
         

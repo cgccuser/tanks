@@ -4,8 +4,12 @@
     var tick = 0;
     
     var walls = [
-        [0, -320, 1000, 15, Math.PI / 2],
-        [0, 320, 1000, 15, Math.PI / 2],
+        [-310, -320, 380, 15, Math.PI / 2],
+        [310, -320, 380, 15, Math.PI / 2],
+        [-310, 320, 380, 15, Math.PI / 2],
+        [310, 320, 380, 15, Math.PI / 2],
+        [0, -320, 160, 15, Math.PI / 2],
+        [0, 320, 160, 15, Math.PI / 2],
         [-400, 60, 80, 12, 0],
         [-400, -60, 80, 15, 0],
         [400, 60, 80, 15, 0],
@@ -23,7 +27,11 @@
     
     var windows = [
         [-400, 0, 40, 10, 0],
-        [400, 0, 40, 10, 0]
+        [400, 0, 40, 10, 0],
+        [-100, -320, 40, 10, Math.PI / 2],
+        [100, -320, 40, 10, Math.PI / 2],
+        [-100, 320, 40, 10, Math.PI / 2],
+        [100, 320, 40, 10, Math.PI / 2]
     ];
     
     var main_transcript = [];
@@ -141,7 +149,7 @@
                             data.s.army = count[0] == count[1] ? (Math.random() * 2 | 0) : count[0] < count[1] ? 0 : 1;
                         }
 
-                        var pos = data.s.army == 0 ? [fround(-425 - Math.random() * 75), fround(Math.random() * 100 - 50)] : [fround(425 + Math.random() * 75), fround(Math.random() * 100 - 50)];
+                        var pos = data.s.army == 0 ? [fround(-437.5 - Math.random() * 75), fround(Math.random() * 100 - 50)] : [fround(437.5 + Math.random() * 75), fround(Math.random() * 100 - 50)];
 
                         rooms[conn.room].tanks.push({
                             id: data.s.id,
