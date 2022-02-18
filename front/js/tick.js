@@ -274,42 +274,96 @@
             Tanks.no_c_pos();
             
             p_dir -= Math.sqrt(spd) / 48;
-        }
-        
-        if ((buttons["p"] || buttons["c"]) && p_dir - dir < (swp + (10 ** -10))) {
+        } else if ((buttons["p"] || buttons["c"]) && p_dir - dir < (swp + (10 ** -10))) {
             Tanks.no_c_pos();
             
             p_dir += Math.sqrt(spd) / 48;
-        }
+        } else if (Tanks.autoaim()) {
+            /** Get the closest shootable tank if shooting in direction np_dir */
+            function closest_tank(np_dir) {
+                var coll = 1000;
+                var best_tank = undefined;
 
-        if (Tanks.autoaim()) {
-            // Keep only enemy tanks that we can shoot
-            var shootable_tanks = tanks.filter(tank =>
-                tank.army != army && box_is_coll(...pos, 24, 40, dir + coll * ds[0], ...tank.pos, 24, 40, tank.dir)
-            );
-            // Filter out tanks that require swiveling the turret around
-            if (Tanks.options.no_opposite_turret) {
-                shootable_tanks = shootable_tanks.filter(tank =>
-                    Math.abs(tank.dir - dir) <= Math.PI
-                );
-            }
-            // Find the tank that requires turning the turret the least
-            if (shootable_tanks.length > 0) {
-                var smallest_angle = Math.abs(dir - shootable_tanks[0].dir)
-                var closest_tank = shootable_tanks[0];
-                for (var i = 1; i < shootable_tanks.length; i ++) {
-                    var tank = shootable_tanks[i];
-                    var angle = Math.abs(dir - tank.dir);
-                    if (angle < smallest_angle) {
-                        smallest_angle = angle;
-                        closest_tank = tank;
+                var p_off = np_dir - dir;
+        
+                if (Tanks.c_pos() != null)
+                    p_off = (Tanks.c_pos()[0] % (Math.PI * 2) + (Math.PI * 2)) % (Math.PI * 2) - dir;
+                
+                if (p_off > Math.PI)
+                    p_off -= Math.PI * 2;
+                if (p_off < -Math.PI)
+                    p_off += Math.PI * 2;
+
+                if (!Tanks.options.no_opposite_turret && (p_off < -(Math.PI - swp) || p_off > (Math.PI - swp))) {
+                    p_off = (p_off + Math.PI) % (Math.PI * 2);
+
+                    if (p_off > Math.PI)
+                        p_off -= Math.PI * 2;
+                    if (p_off < -Math.PI)
+                        p_off += Math.PI * 2;
+                }
+
+                p_off = Math.min(Math.max(p_off, -swp), swp);
+
+                np_dir = p_off + dir;
+                
+                for (var wall of walls)
+                    coll = Math.min(coll, collision([pos[0] + Math.cos(np_dir) * 26, pos[1] + Math.sin(np_dir) * 26], np_dir, ...wall));
+                
+                for (var window of windows)
+                    if (!within_window(pos[0] + Math.cos(np_dir) * 26, pos[1] + Math.sin(np_dir) * 26, np_dir, ...window))
+                        coll = Math.min(coll, collision([pos[0] + Math.cos(np_dir) * 26, pos[1] + Math.sin(np_dir) * 26], np_dir, ...window));
+                
+                for (var tank of tanks) {
+                    if (tank.army == army)
+                        continue;
+                    
+                    var c = collision([pos[0] + Math.cos(np_dir) * 26, pos[1] + Math.sin(np_dir) * 26], np_dir, ...tank.pos, 24, 40, tank.dir);
+                    
+                    if (c <= coll) {
+                        coll = c;
+                        best_tank = tank;
                     }
                 }
-                if (closest_tank.dir - dir > 0) {
-                    p_dir += Math.sqrt(spd) / 48;
-                } else if (closest_tank.dir - dir < 0) {
-                    p_dir -= Math.sqrt(spd) / 48;
+
+                return best_tank;
+            }
+
+            // Only move if our current position isn't good already
+            if (closest_tank(p_dir) === undefined) {
+                // Try every direction, going outwards from p_dir
+                var p_dir_inc = Math.sqrt(spd) / 48;
+                var i = 0;
+                while (Math.abs(p_dir + p_dir_inc - dir) <= (Math.PI - swp)) {
+                    i ++;
+                    var inced = p_dir + p_dir_inc;
+                    var deced = p_dir - p_dir_inc;
+                    var can_go_left = Math.abs(inced - dir) <= Math.PI - swp;
+                    var can_go_right = Math.abs(deced - dir) <= Math.PI - swp;
+                    if (!can_go_left && !can_go_right) {
+                        break;
+                    }
+                    if (can_go_left) {
+                        var tank = closest_tank(inced);
+                        if (tank !== undefined) {
+                            p_dir += Math.sqrt(spd) / 48;
+                            // console.log(`inc t=${tank.name}, ${i} inc=${inced} pd=${p_dir_inc} ${Math.abs(p_dir + p_dir_inc - dir)} ${p_dir_inc * 48 / Math.sqrt(spd)}`); // + ", inced=" + inced + ", pdir=" + p_dir);
+                            break;
+                        }
+                    }
+                    if (can_go_right) {
+                        var tank = closest_tank(deced);
+                        if (tank !== undefined) {
+                            // console.log(`dec t=${tank.name}, ${i} dec=${deced} pd=${p_dir_inc} ${Math.abs(p_dir + p_dir_inc - dir)} ${Math.PI} ${p_dir_inc * 48 / Math.sqrt(spd)}`);// + ", deced=" + deced + ", pdir=" + p_dir);
+                            p_dir -= Math.sqrt(spd) / 48;
+                            break;
+                        }
+                    }
+                    p_dir_inc += Math.sqrt(spd) / 48;
+                    // break;
                 }
+            } else {
+                // console.log("yes", closest_tank(p_dir).name, (p_dir / Math.PI));
             }
         }
 
@@ -341,6 +395,10 @@
 
     var tick = () => {
         var buttons = Tanks.buttons();
+
+        if (Tanks.autoaim()) {
+            Tanks.no_c_pos();
+        }
         
         if (!ttrm && (Tanks.c_down() || buttons["Space"] || buttons["o"] || buttons["x"] || (Tanks.autoshoot() && try_shot_cnt > 2))) {
             try_shoot();
