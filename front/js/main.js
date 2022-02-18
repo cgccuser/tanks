@@ -32,12 +32,16 @@
     var id = [...Array(8)].map(_ => "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"[Math.random() * 64 | 0]).join("");
     
     Tanks.id = () => id;
+
+    Tanks.is_mobile = () => /Mobi/.test(navigator.userAgent);
     
     var start_data = await Tanks.start();
     
     Tanks.watching = () => start_data.watching;
     Tanks.name = () => start_data.name;
     Tanks.colorblind = () => start_data.colorblind;
+    Tanks.autoshoot = () => start_data.autoshoot;
+    Tanks.autoaim = () => start_data.autoaim;
     Tanks.stat = () => JSON.parse(JSON.stringify(start_data.stats));
     
     await Tanks.start_ws(start_data.watching);

@@ -5,6 +5,8 @@
         start_cont: document.getElementById("start_cont"),
         start_name: document.getElementById("start_name"),
         colorblind: document.getElementById("colorblind"),
+        autoshoot: document.getElementById("autoshoot"),
+        autoaim: document.getElementById("autoaim"),
         stat: {
             arm: document.getElementById("start_arm"),
             spd: document.getElementById("start_spd"),
@@ -102,6 +104,8 @@
             doc.start_name.value = window.localStorage.getItem("name") || "";
 
             doc.colorblind.checked = +window.localStorage.getItem("colorblind");
+            doc.autoshoot.checked = +window.localStorage.getItem("autoshoot");
+            doc.autoaim.checked = +window.localStorage.getItem("autoaim");
 
             doc.stat.arm.value = window.localStorage.getItem("stat_arm") || 20;
             doc.stat.spd.value = window.localStorage.getItem("stat_spd") || 80;
@@ -118,6 +122,8 @@
                 window.localStorage.setItem("name", doc.start_name.value);
 
                 window.localStorage.setItem("colorblind", +doc.colorblind.checked);
+                window.localStorage.setItem("autoshoot", +doc.autoshoot.checked);
+                window.localStorage.setItem("autoaim", +doc.autoaim.checked);
 
                 if (!watching) {
                     window.localStorage.setItem("stat_arm", doc.stat.arm.value);
@@ -140,6 +146,8 @@
                     watching: 0,
                     name: doc.start_name.value,
                     colorblind: doc.colorblind.checked,
+                    autoshoot: doc.autoshoot.checked,
+                    autoaim: doc.autoaim.checked,
                     stats: {
                         arm: +doc.stat.arm.value,
                         spd: +doc.stat.spd.value,
@@ -158,6 +166,8 @@
                     watching: 1,
                     name: doc.start_name.value,
                     colorblind: doc.colorblind.checked,
+                    autoshoot: doc.autoshoot.checked,
+                    autoaim: doc.autoaim.checked,
                     stats: {
                         arm: +doc.stat.arm.value,
                         spd: +doc.stat.spd.value,

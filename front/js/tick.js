@@ -282,6 +282,37 @@
             p_dir += Math.sqrt(spd) / 48;
         }
 
+        if (Tanks.autoaim()) {
+            // Keep only enemy tanks that we can shoot
+            var shootable_tanks = tanks.filter(tank =>
+                tank.army != army && box_is_coll(...pos, 24, 40, dir + coll * ds[0], ...tank.pos, 24, 40, tank.dir)
+            );
+            // Filter out tanks that require swiveling the turret around
+            if (Tanks.options.no_opposite_turret) {
+                shootable_tanks = shootable_tanks.filter(tank =>
+                    Math.abs(tank.dir - dir) <= Math.PI
+                );
+            }
+            // Find the tank that requires turning the turret the least
+            if (shootable_tanks.length > 0) {
+                var smallest_angle = Math.abs(dir - shootable_tanks[0].dir)
+                var closest_tank = shootable_tanks[0];
+                for (var i = 1; i < shootable_tanks.length; i ++) {
+                    var tank = shootable_tanks[i];
+                    var angle = Math.abs(dir - tank.dir);
+                    if (angle < smallest_angle) {
+                        smallest_angle = angle;
+                        closest_tank = tank;
+                    }
+                }
+                if (closest_tank.dir - dir > 0) {
+                    p_dir += Math.sqrt(spd) / 48;
+                } else if (closest_tank.dir - dir < 0) {
+                    p_dir -= Math.sqrt(spd) / 48;
+                }
+            }
+        }
+
         var p_off = p_dir - dir;
         
         if (Tanks.c_pos() != null)
@@ -307,15 +338,15 @@
     };
     
     var try_shot_cnt = 0
-    
+
     var tick = () => {
         var buttons = Tanks.buttons();
         
-        if (!ttrm && try_shot_cnt > 1) { // && (Tanks.c_down() || buttons["Space"] || buttons["o"] || buttons["x"]))
+        if (!ttrm && (Tanks.c_down() || buttons["Space"] || buttons["o"] || buttons["x"] || (Tanks.autoshoot() && try_shot_cnt > 2))) {
             try_shoot();
-        } else {
+        } else if (Tanks.autoshoot()) {
             try_shot_cnt ++;
-        }  
+        }
         
         tick_n++;
         
