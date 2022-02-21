@@ -4,7 +4,8 @@
     Tanks.options = {
         fancy_turning: 0,
         turn_with_turret: 0,
-        no_opposite_turret: 0
+        no_opposite_turret: 0,
+        show_buttons: 1
     };
     
     Tanks.push_options = () => {

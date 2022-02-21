@@ -156,6 +156,28 @@
 
             c_2d.stroke();
 
+            if (Tanks.is_mobile() || Tanks.options.show_buttons) {
+                const bottom_dist = 30
+                const height = 15
+                const leg_half = 10
+                for (var bdir of [dir, dir + Math.PI / 2, dir + Math.PI, dir + 3 * Math.PI / 2]) {
+                    var x_bottom = pos[0] + Math.cos(bdir) * bottom_dist
+                    var y_bottom = pos[1] + Math.sin(bdir) * bottom_dist
+                    var x_top = x_bottom + Math.cos(bdir) * height
+                    var y_top = y_bottom + Math.sin(bdir) * height
+                    var x_leg_offset = Math.sin(bdir) * leg_half
+                    var y_leg_offset = Math.cos(bdir) * leg_half
+
+                    c_2d.beginPath();
+                    c_2d.moveTo(...from_pos(x_top, y_top));
+                    c_2d.lineTo(...from_pos(x_bottom + x_leg_offset, y_bottom + y_leg_offset));
+                    c_2d.lineTo(...from_pos(x_bottom - x_leg_offset, y_bottom - y_leg_offset));
+                    c_2d.lineTo(...from_pos(x_top, y_top));
+                    c_2d.closePath();
+                    c_2d.stroke();
+                }
+            }
+
             c_2d.fillStyle = "rgba(136, 0, 0, 0.4)";
             c_2d.strokeStyle = "rgba(136, 0, 0, 0.4)";
 
