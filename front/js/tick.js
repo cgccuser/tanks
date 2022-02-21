@@ -422,6 +422,28 @@
                 ds = [1, ds[0] == -1 ? 1 : -1];
             if (buttons["s"] || buttons["ArrowDown"])
                 ds = [-(ds[0] || 1), -(ds[1] || 1)];
+            
+            // Move using the buttons if that's enabled
+            if ((Tanks.is_mobile() || Tanks.options.move_with_buttons) && Tanks.c_pos() != null && Tanks.c_down()) {
+                var [angle, dist] = Tanks.c_pos();
+                // Make sure the click is somewhat close to the buttons
+                if (30 <= dist && dist <= 45) {
+                    angle = (angle - Tanks.dir() + 2 * Math.PI) % (2 * Math.PI);
+                    if (angle > Math.PI / 4 && angle < 3 * Math.PI / 4) {
+                        // Turn right
+                        ds = [1, -1];
+                    } else if (angle > 3 * Math.PI / 4 && angle < 5 * Math.PI / 4) {
+                        // Go back
+                        ds = [-1, -1];
+                    } else if (angle > 5 * Math.PI / 4 && angle < 7 * Math.PI / 4) {
+                        // Turn left
+                        ds = [-1, 1];
+                    } else {
+                        // Go straight
+                        ds = [1, 1];
+                    }
+                }
+            }
 
             if (ds[0] == 0)
                 return;

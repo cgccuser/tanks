@@ -108,7 +108,9 @@
 
             window.onmousemove(info);
 
-            Tanks.try_shoot();
+            if (!Tanks.is_mobile() && !Tanks.options.move_with_buttons) {
+                Tanks.try_shoot();
+            }
         };
 
         Tanks.no_c_pos = () => (c_pos = null);

@@ -156,10 +156,11 @@
 
             c_2d.stroke();
 
-            if (Tanks.is_mobile() || Tanks.options.show_buttons) {
+            if (Tanks.is_mobile() || Tanks.options.move_with_buttons) {
                 const bottom_dist = 30
                 const height = 15
                 const leg_half = 10
+                var dir = Tanks.dir();
                 for (var bdir of [dir, dir + Math.PI / 2, dir + Math.PI, dir + 3 * Math.PI / 2]) {
                     var x_bottom = pos[0] + Math.cos(bdir) * bottom_dist
                     var y_bottom = pos[1] + Math.sin(bdir) * bottom_dist
