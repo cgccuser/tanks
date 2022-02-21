@@ -161,6 +161,7 @@
                 const height = 15
                 const leg_half = 10
                 var dir = Tanks.dir();
+                var pos = Tanks.pos();
                 for (var bdir of [dir, dir + Math.PI / 2, dir + Math.PI, dir + 3 * Math.PI / 2]) {
                     var x_bottom = pos[0] + Math.cos(bdir) * bottom_dist
                     var y_bottom = pos[1] + Math.sin(bdir) * bottom_dist

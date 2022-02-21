@@ -110,6 +110,8 @@
 
             if (!Tanks.is_mobile() && !Tanks.options.move_with_buttons) {
                 Tanks.try_shoot();
+            } else {
+                alert("detected tap!");
             }
         };
 
