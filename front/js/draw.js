@@ -172,8 +172,8 @@
 
                     c_2d.beginPath();
                     c_2d.moveTo(...from_pos(x_top, y_top));
-                    c_2d.lineTo(...from_pos(x_bottom + x_leg_offset, y_bottom + y_leg_offset));
-                    c_2d.lineTo(...from_pos(x_bottom - x_leg_offset, y_bottom - y_leg_offset));
+                    c_2d.lineTo(...from_pos(x_bottom + x_leg_offset, y_bottom - y_leg_offset));
+                    c_2d.lineTo(...from_pos(x_bottom - x_leg_offset, y_bottom + y_leg_offset));
                     c_2d.lineTo(...from_pos(x_top, y_top));
                     c_2d.closePath();
                     c_2d.stroke();
